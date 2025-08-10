@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { predictReview } from "./api";
-import SentimentBadge from "./components/SentimentBadge";
+import { SentimentBadge } from "./components/SentimentBadge";
 import "./styles.css";
 
 function prettyPct(p) {
@@ -17,11 +17,14 @@ export default function App() {
   const taRef = useRef(null);
 
   async function analyze() {
-    setError(""); setResult(null);
+    setError("");
+    setResult(null);
     if (!text.trim()) return setError("Please paste or type a review.");
     try {
       setLoading(true);
       const data = await predictReview(text.trim());
+      // Guard against weird API shapes
+      if (!data || typeof data !== "object") throw new Error("Bad API response");
       setResult(data);
       setRephrase(data.rephrase || "");
     } catch (e) {
@@ -47,12 +50,17 @@ export default function App() {
   };
 
   return (
-    <div className="page">
+    <div className="page" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <header className="header">
-        <h1>Review Sentiment + Reasoning</h1>
-        <p className="sub">Paste a product review, get sentiment, reason, detailed explanation, and a brand-friendly rephrase.</p>
+        <div className="hero">
+          <h1>Review Sentiment + Reasoning</h1>
+          <p className="sub">
+            Paste a product review—get sentiment, reasons, a detailed explanation, and a brand-friendly rephrase.
+          </p>
+        </div>
       </header>
 
+      {/* Input */}
       <section className="card">
         <label className="label">Review</label>
         <textarea
@@ -68,16 +76,19 @@ export default function App() {
           <button className="btn primary" onClick={analyze} disabled={loading}>
             {loading ? "Analyzing…" : "Analyze (Ctrl+Enter)"}
           </button>
-          <button className="btn" onClick={()=>{setText("");setResult(null);setRephrase("");setError(""); taRef.current?.focus();}} disabled={loading}>
+          <button className="btn" onClick={()=>{
+            setText(""); setResult(null); setRephrase(""); setError(""); taRef.current?.focus();
+          }} disabled={loading}>
             Clear
           </button>
         </div>
         {error && <div className="error">{error}</div>}
       </section>
 
+      {/* Results (no 3D for now) */}
       {result && (
-        <section className="card">
-          <div className="row wrap gap">
+        <section className="card glass">
+          <div className="row wrap gap center" style={{ marginTop: 12 }}>
             <SentimentBadge sentiment={result.sentiment} />
             <div className="prob">{prettyPct(result.probability)} confidence</div>
           </div>

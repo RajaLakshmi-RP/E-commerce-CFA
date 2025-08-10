@@ -6,9 +6,16 @@ export async function predictReview(reviewText) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ review_text: reviewText }),
   });
-  if (!res.ok) {
-    const txt = await res.text().catch(() => "");
-    throw new Error(`API ${res.status}: ${txt || res.statusText}`);
-  }
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  return res.json();
+}
+
+export async function rephraseReview({ reviewText, tone = "neutral", length = "medium", sentiment }) {
+  const res = await fetch(`${API_BASE}/rephrase`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ review_text: reviewText, tone, length, sentiment }),
+  });
+  if (!res.ok) throw new Error(`API ${res.status}`);
   return res.json();
 }

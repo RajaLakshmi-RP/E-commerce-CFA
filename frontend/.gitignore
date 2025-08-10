@@ -7,9 +7,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Node.js dependencies
+node_modules/
+frontend/node_modules/
+
+# Build output
+dist/
+dist-ssr/
+frontend/dist/
+
+# Local environment files
+.env
+.env.*
 *.local
 
 # Editor directories and files
@@ -43,3 +52,27 @@ dist/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Python cache & virtual environment
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Data and model artifacts (if generated or large)
+data/processed/
+data/raw/
+models/*.joblib
+models/*.pkl
+*.csv
+*.tsv
+*.xlsx
+
+# OS files
+Thumbs.db
+
+# Optional: Ignore frontend lock files if not needed
+# package-lock.json
+# yarn.lock
+
+E-commerce-CFA/
