@@ -1,0 +1,15 @@
+# --- API / inference runtime ---
+fastapi==0.115.6
+uvicorn==0.30.6
+starlette==0.41.3
+
+# ML stack (match your local env)
+scikit-learn==1.7.1
+numpy==1.26.4
+scipy==1.16.1
+pandas==2.2.2
+joblib==1.4.2
+
+# FastAPI deps (pin to avoid resolver surprises)
+pydantic==2.11.7
+typing_extensions==4.14.1
