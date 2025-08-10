@@ -2,6 +2,8 @@
 fastapi==0.115.6
 uvicorn==0.30.6
 starlette==0.41.3
+openai>=1.0.0
+
 
 # ML stack (match your local env)
 scikit-learn==1.7.1
