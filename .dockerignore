@@ -1,0 +1,23 @@
+# VCS & editor junk
+.git
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.tmp
+*.swp
+.vscode/
+.venv/
+
+# Frontend & node
+frontend/
+node_modules/
+
+# Big/local data not needed in image
+data/
+plots/
+
+# OS files
+.DS_Store
+Thumbs.db
