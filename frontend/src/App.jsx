@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { predictReview } from "./api";
 import { SentimentBadge } from "./components/SentimentBadge";
 import "./styles.css";
@@ -16,6 +16,11 @@ export default function App() {
   const [rephrase, setRephrase] = useState("");
   const taRef = useRef(null);
 
+  // Set page title
+  useEffect(() => {
+    document.title = "Rent Runway - Feedback";
+  }, []);
+
   async function analyze() {
     setError("");
     setResult(null);
@@ -23,7 +28,6 @@ export default function App() {
     try {
       setLoading(true);
       const data = await predictReview(text.trim());
-      // Guard against weird API shapes
       if (!data || typeof data !== "object") throw new Error("Bad API response");
       setResult(data);
       setRephrase(data.rephrase || "");
@@ -53,7 +57,7 @@ export default function App() {
     <div className="page" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <header className="header">
         <div className="hero">
-          <h1>Review Sentiment + Reasoning</h1>
+          <h1 className="fancy-header"> Style Speaks — Tell Us What You Think</h1>
           <p className="sub">
             Paste a product review—get sentiment, reasons, a detailed explanation, and a brand-friendly rephrase.
           </p>
@@ -85,7 +89,7 @@ export default function App() {
         {error && <div className="error">{error}</div>}
       </section>
 
-      {/* Results (no 3D for now) */}
+      {/* Results */}
       {result && (
         <section className="card glass">
           <div className="row wrap gap center" style={{ marginTop: 12 }}>
@@ -94,7 +98,7 @@ export default function App() {
           </div>
 
           <div className="block">
-            <div className="label">Reason (short)</div>
+            <div className="label">Reason</div>
             <div className="reason">{result.reason || "—"}</div>
           </div>
 
@@ -107,7 +111,7 @@ export default function App() {
           </div>
 
           <div className="block">
-            <div className="label">Rephrase (editable)</div>
+            <div className="label">Rephrase</div>
             <textarea className="textarea" rows={4} value={rephrase} onChange={(e)=>setRephrase(e.target.value)} />
             <div className="row">
               <button className="btn" onClick={()=>copy(rephrase)}>Copy Rephrase</button>
@@ -117,10 +121,6 @@ export default function App() {
           </div>
         </section>
       )}
-
-      <footer className="footer">
-        <small>Backend: <code>{import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8080"}</code></small>
-      </footer>
     </div>
   );
 }
