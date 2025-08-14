@@ -48,35 +48,44 @@ This project goes beyond basic sentiment analysis by providing:
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
+```
 
 **2. Preparing the Data**
 
-```bash
 Place the raw file in:
+```bash
 data/raw/renttherunway_final_data.json.gz
-
+```
 Run preprocessing:
+```
 python src/preprocessing.py
 python src/text_preprocessing.py
+```
 
 This will create:
+```bash
 data/processed/renttherunway_clean.csv
 data/processed/renttherunway_clean_text.csv
+```
 
-*** 3. Training the Model***
+**3. Training the Model**
 Run: python src/sentiment_model.py
-
+```
 This will save the trained model to:
 models/sentiment_pipeline.joblib
+```
 
 Running the API
-Start the server:
 
+Start the server:
+```
 uvicorn api.main:app --host 0.0.0.0 --port 8080
 Open the interactive docs in your browser:
 http://127.0.0.1:8080/docs
+```
 
 Example API Usage
+```
 POST /predict
 
 JSON
@@ -91,6 +100,7 @@ JSON
 {
   "sentiment": "Negative",
   "probability": 0.89,
+```
 
 ## Key Features
 
@@ -126,115 +136,9 @@ JSON
    - `/rephrase` – Returns rephrase for a given review with tone/length controls  
 
 ---
-
-## Setup Instructions
-
-### 1. Create Virtual Environment and Install Dependencies
+### Cloud Link
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+https://storage.googleapis.com/ecommercecfa-frontend/index.html
 ```
 
-### 2. Data Preparation
-Place the raw dataset at:
 
-```
-bash
-data/raw/renttherunway_final_data.json.gz
-```
-
-Run preprocessing:
-```bash
-python src/preprocessing.py
-python src/text_preprocessing.py
-
-```
-
-```bash
-
-data/processed/renttherunway_clean.csv
-data/processed/renttherunway_clean_text.csv
-
-```
-### 3. Train the Model
-```
-bash
-
-python src/sentiment_model.py
-Saves model to:
-```
-```bash
-models/sentiment_pipeline.joblib
-```
-### 4. Run the API
-```
-bash
-
-uvicorn api.main:app --host 0.0.0.0 --port 8080
-```
-Interactive API docs:
-```
-arduino
-
-http://127.0.0.1:8080/docs
-```
-
-Example API Usage
-POST /predict
-```
-Request:
-
-json
-{
-  "review_text": "The zipper broke after one use."
-}
-```
-```
-Response:
-
-json
-
-{
-  "sentiment": "Negative",
-  "probability": 0.89,
-  "reason": "The review specifically mentions broke and zipper, which indicate dissatisfaction.",
-  "explanation": "The text contains dissatisfaction markers... Confidence ≈ 89.0%.",
-  "rephrase": "Thanks for the review. We understand there were hardware issues (e.g., zipper/button). We’ll use this to improve."
-}
-```
-```
-Environment Variables
-Variable	Description
-OPENAI_API_KEY	(Optional) API key for enhanced LLM-based explanations
-USE_OPENAI_EXPLANATION	Set 1 to enable LLM explanations if key is present (default)
-```
-```
-Deployment
-Local: Run with Uvicorn (as shown above)
-
-Containerized: Use provided Dockerfile
-
-Cloud: Compatible with GCP Cloud Run, AWS ECS, Azure Container Apps
-```
-```
-Frontend can be deployed to static hosting (e.g., Netlify, Vercel, Cloud Storage + CDN)
-
-Limitations & Future Improvements
-Approximate probabilities for SVC — consider probability calibration.
-
-Expand aspect categories and domain keyword lists.
-
-Add multilingual support.
-
-Implement feedback loop to learn from user-edited rephrases.
-```
-```
-License
-This project is licensed under the MIT License.
-```
-```
-
-  "reason": "Detected negative keywords: broke, zipper.",
-  "rephrase": "I had some issues with this item, and it didn’t fully meet my expectations."
-}
