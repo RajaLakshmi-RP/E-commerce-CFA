@@ -11,12 +11,12 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-#  Paths / Model
+#  Load sentiment analysis model
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MODEL_PATH = PROJECT_ROOT / "models" / "sentiment_pipeline.joblib"
 pipe = joblib.load(MODEL_PATH)
 
-#  OpenAI 
+#  OpenAI Setup
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 USE_OPENAI_EXPLANATION = os.getenv("USE_OPENAI_EXPLANATION", "1") == "1"
 openai_client = None
@@ -27,10 +27,10 @@ if OPENAI_API_KEY:
     except Exception:
         openai_client = None  # fallback will be used
 
-#  FastAPI app
+#  FastAPI app configuration
 app = FastAPI(title="Product Review Sentiment + Reasoning")
 
-#  CORS (DEV) 
+#  CORS (DEV) (allow front end to call API directly )
 # Fast for development: allow all origins so Vite (5173/4/5) can call 127.0.0.1:8080
 # IMPORTANT: tighten this for production (e.g., allow_origins=["https://yourdomain"])
 app.add_middleware(
@@ -97,7 +97,7 @@ STOPWORDS = {
     "dress","item","product","rent","rental","order","material","fabric","color","quality"
 }
 
-#  Utils 
+#  Utility Function
 def contains_negative_hint(text: str) -> List[str]:
     t = text.lower()
     return sorted({w for w in NEGATIVE_HINTS if w in t})
@@ -271,14 +271,14 @@ def generate_rephrase(review: str, sentiment: str, aspects: List[str],
         "neutral":     "Thanks for the review.",
         "apologetic":  "We’re sorry about the trouble you experienced.",
         "warm":        "Thank you for letting us know about your experience.",
-        "concise":     "Thanks for the feedback.",
+        "concise":     "Thanks for your feedback.",
         "formal":      "We appreciate your detailed feedback.",
     }
     close_by_tone = {
-        "neutral":     "We’ll use this to improve.",
-        "apologetic":  "We’ll address this with our team and improve.",
-        "warm":        "We’ll share this with our team to make things better.",
-        "concise":     "We’ll improve.",
+        "neutral":     "We will use this to improve.",
+        "apologetic":  "We will  address this with our team and improve.",
+        "warm":        "We will share this with our team to make things better.",
+        "concise":     "We will improve.",
         "formal":      "Your comments will be reviewed to inform product improvements.",
     }
 
