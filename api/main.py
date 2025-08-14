@@ -11,12 +11,12 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# ---------------- Paths / Model ----------------
+#  Paths / Model
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MODEL_PATH = PROJECT_ROOT / "models" / "sentiment_pipeline.joblib"
 pipe = joblib.load(MODEL_PATH)
 
-# --------------- Optional OpenAI ---------------
+#  OpenAI 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 USE_OPENAI_EXPLANATION = os.getenv("USE_OPENAI_EXPLANATION", "1") == "1"
 openai_client = None
@@ -27,10 +27,10 @@ if OPENAI_API_KEY:
     except Exception:
         openai_client = None  # fallback will be used
 
-# ---------------- FastAPI app ------------------
+#  FastAPI app
 app = FastAPI(title="Product Review Sentiment + Reasoning")
 
-# ------------------- CORS (DEV) ----------------
+#  CORS (DEV) 
 # Fast for development: allow all origins so Vite (5173/4/5) can call 127.0.0.1:8080
 # IMPORTANT: tighten this for production (e.g., allow_origins=["https://yourdomain"])
 app.add_middleware(
@@ -41,7 +41,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ----------------- Schemas ---------------------
+#  Schemas 
 class ReviewIn(BaseModel):
     review_text: str
 
@@ -61,7 +61,7 @@ class RephraseIn(BaseModel):
 class RephraseOut(BaseModel):
     rephrase: str
 
-# ---------------- Heuristics -------------------
+#  Heuristics 
 NEGATIVE_HINTS = {
     "broke","broken","tear","ripped","stain","stained","hole","defect",
     "cheap","itchy","uncomfortable","painful","worst","refund","return",
@@ -97,7 +97,7 @@ STOPWORDS = {
     "dress","item","product","rent","rental","order","material","fabric","color","quality"
 }
 
-# ----------------- Utils -----------------------
+#  Utils 
 def contains_negative_hint(text: str) -> List[str]:
     t = text.lower()
     return sorted({w for w in NEGATIVE_HINTS if w in t})
@@ -251,7 +251,7 @@ def try_llm_explanation(review: str, sentiment: str, prob: float,
     except Exception:
         return None
 
-# ---------- Rephrase (smart, tone/length-aware) ----------
+#  Rephrase (smart, tone/length-aware) 
 def generate_rephrase(review: str, sentiment: str, aspects: List[str],
                       tone: str = "neutral", length: str = "medium") -> str:
     """
@@ -312,7 +312,7 @@ def soft_rephrase(review: str, sentiment: str) -> str:
     aspects = extract_aspects(review)
     return generate_rephrase(review, sentiment, aspects, tone="neutral", length="medium")
 
-# ------------------- Routes --------------------
+# Routes 
 @app.get("/", include_in_schema=False)
 def root():
     return RedirectResponse(url="/docs")
@@ -386,7 +386,7 @@ def rephrase_api(inp: RephraseIn):
     aspects = extract_aspects(review)
     base = generate_rephrase(review, snt, aspects, tone=tone, length=length)
 
-    # Optional LLM polish for negative cases
+    #  LLM polish for negative cases
     if openai_client and snt == "Negative":
         try:
             sys = ("Rewrite this into a short, brand-friendly response that acknowledges the issues and sets an improving tone. Avoid fluff.")
@@ -407,7 +407,7 @@ def rephrase_api(inp: RephraseIn):
 
     return RephraseOut(rephrase=base)
 
-# (Optional) Run directly with: python -m uvicorn api.main:app --reload --host 127.0.0.1 --port 8080
+#  Run directly with: python -m uvicorn api.main:app --reload --host 127.0.0.1 --port 8080
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("api.main:app", host="127.0.0.1", port=8080, reload=True)
