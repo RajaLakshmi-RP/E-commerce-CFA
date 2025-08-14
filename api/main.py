@@ -11,7 +11,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-#  Load sentiment analysis model
+#  Paths/Model
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MODEL_PATH = PROJECT_ROOT / "models" / "sentiment_pipeline.joblib"
 pipe = joblib.load(MODEL_PATH)
