@@ -16,6 +16,7 @@ Currently, this repository contains only the backend code. Frontend and cloud de
 ---
 
 ### Project Structure
+```
 ├─ api/
 │ └─ main.py # FastAPI app
 ├─ src/
@@ -27,6 +28,7 @@ Currently, this repository contains only the backend code. Frontend and cloud de
 │ └─ processed/ # Generated cleaned data
 ├─ models/ # Trained model files
 └─ README.md
+```
 
 ### Setup Instructions
 
