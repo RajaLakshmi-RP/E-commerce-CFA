@@ -127,7 +127,7 @@ JSON
 
 5. **Rephrasing**  
    - Template-based rephrasing with configurable tone and length.  
-   - Optional LLM refinement for negative reviews.
+   - LLM refinement for negative reviews.
 
 6. **API Endpoints**  
    - `/health` – Service health check  
