@@ -1,3 +1,4 @@
+/*app.jsx*/
 import { useState, useRef, useEffect } from "react";
 import { predictReview } from "./api";
 import { SentimentBadge } from "./components/SentimentBadge";
